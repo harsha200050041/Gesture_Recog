@@ -10,18 +10,6 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 
 
 
-result_dict = {
-    "Gesture Category": 0,
-    "Gesture Score": 0,
-    "Handedness Category": 0,
-    "Handedness Score": 0,
-    "Handedness Display Name": 0,
-    "Landmarks":[]
-}
-
-for i in range(21):
-    landmark_obj = {"X": 0, "Y": 0, "Z": 0, "Visibility": 0, "Presence": 0}
-    result_dict["Landmarks"].append(landmark_obj)
 
 def map_landmark_to_pixel(landmark, img_width, img_height):
     x = int(landmark['X'] * img_width)
@@ -46,7 +34,6 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 
 def print_result(result: GestureRecognizerResult, frame: mp.Image, timestamp_ms: int):
     # Initialize the dictionary with initial values
-    # result_dict = initial_values.copy()
 
     # Extract gestures
     gestures = result.gestures
@@ -87,7 +74,7 @@ options = GestureRecognizerOptions(
 
 # Create a gesture recognizer instance
 with GestureRecognizer.create_from_options(options) as recognizer:
-    # Open the camera
+
     cap = cv2.VideoCapture(0)
 
     while cap.isOpened():
@@ -97,18 +84,16 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         if not ret:
             break
 
-        # Create an MP Image from the OpenCV frame
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
 
         # Recognize gestures asynchronously
         recognizer.recognize_async(mp_image, frame_timestamp_ms_int)
 
         print(result_dict)
-        scale_factor = 1.0
+        # scale_factor = 1.0
 
-        # # Convert coordinates to integers
-        # landmark_x = int(result_dict['Landmark X'] * scale_factor)
-        # landmark_y = int(result_dict['Landmark Y'] * scale_factor)
+        # # landmark_x = int(result_dict['Landmark X'] * scale_factor)
+        # # landmark_y = int(result_dict['Landmark Y'] * scale_factor)
         img_height, img_width, _ = frame.shape
 
         for landmark in result_dict['Landmarks']:
